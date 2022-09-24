@@ -9,5 +9,5 @@ public interface BaseController {
     Response getRequest(String path);
     Response postRequest(String path, String body);
     Response patchRequest(String path, String body);
-    Response deleteRequest(String path);
+    Response deleteRequest(String path, String body);
 }
