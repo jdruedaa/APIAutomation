@@ -1,31 +1,35 @@
 package org.tmdb.controllers;
 
+import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.tmdb.models.movie.Movie;
 
-public class AuthV3Controller implements BaseController{
-
+public class MovieController implements BaseController{
     private String apiKey;
 
     private String authorizationHeader;
 
-    public AuthV3Controller()
+    private Gson gson;
+
+    public MovieController()
     {
         setUp();
     }
 
     @Override
     public void setUp() {
-        RestAssured.baseURI = "https://api.themoviedb.org/3/authentication/";
+        RestAssured.baseURI = "https://api.themoviedb.org/3/movie/";
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
+        gson = new Gson();
     }
 
     @Override
     public RequestSpecification requestBase() {
         return RestAssured.given()
-                .contentType("application/json")
+                .contentType("application/json;charset=utf-8")
                 .header("Authorization",authorizationHeader)
                 .queryParam("api_key", apiKey);
     }
@@ -73,20 +77,23 @@ public class AuthV3Controller implements BaseController{
                 .response();
     }
 
-    public Response createRequestToken()
+    public Response getMovieDetails(int movieId)
     {
-        return getRequest("token/new");
+        return getRequest("" + movieId);
     }
 
-    public Response validateRequestToken(String requestToken)
+    public Movie extractMovieFromResponse(Response response)
     {
-        String username = System.getenv("MovieDB_username");
-        String password = System.getenv("MovieDB_password");
+        Movie movie;
+        movie = gson.fromJson(response.getBody().asString(), Movie.class);
+        return movie;
+    }
+
+    public Response rateMovie(int movieId, double ratingValue)
+    {
         String body = "{" +
-                "\"username\": \"" + username  + "\",\n" +
-                "\"password\": \"" + password  + "\",\n" +
-                "\"request_token\": \"" + requestToken  + "\"" +
+                "\"value\": " + ratingValue +
                 "}";
-        return postRequest("token/validate_with_login", body);
+        return postRequest(movieId + "/rating", body);
     }
 }

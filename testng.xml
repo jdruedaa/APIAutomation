@@ -6,4 +6,11 @@
             <class name="org.tmdb.tests.auth.AuthV3Tests"/>
         </classes>
     </test>
+    <test name="TMDB Movie">
+        <parameter name="movieId" value="550"/>
+        <parameter name="rating" value="8.0"/>
+        <classes>
+            <class name="org.tmdb.tests.movie.MovieTests"/>
+        </classes>
+    </test>
 </suite>

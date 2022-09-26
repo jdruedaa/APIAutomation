@@ -7,13 +7,11 @@ public class AuthUtils {
     public String extractRequestToken(Response response)
     {
         JsonPath jsonPath = new JsonPath(response.getBody().asString());
-        String requestToken = jsonPath.get("request_token");
-        return requestToken;
+        return jsonPath.get("request_token");
     }
     public String extractAccessToken(Response response)
     {
         JsonPath jsonPath = new JsonPath(response.getBody().asString());
-        String accessToken = jsonPath.get("access_token");
-        return accessToken;
+        return jsonPath.get("access_token");
     }
 }
