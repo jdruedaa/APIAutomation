@@ -20,6 +20,8 @@ public class ListController implements BaseController{
 
     private final Logger log = LoggerFactory.getLogger(ListController.class);
 
+    private String basePath;
+
     public ListController()
     {
         setUp();
@@ -29,7 +31,7 @@ public class ListController implements BaseController{
     public void setUp() {
         log.info("Performing setup for new instance...");
         sessionId = requestAuthorizedSession();
-        RestAssured.baseURI = "https://api.themoviedb.org/3/list";
+        basePath = "https://api.themoviedb.org/3/list";
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
         gson = new Gson();
@@ -104,14 +106,14 @@ public class ListController implements BaseController{
         log.info("Requesting authorized session...");
         AuthUtils authUtils = new AuthUtils();
         String sessionId = authUtils.createAuthorizedSession();
-        log.info("Recieved authorized session.");
+        log.info("Received authorized session.");
         return sessionId;
     }
 
     public Response getListDetails(int listId)
     {
         log.info("Requesting list details with id " + listId + "...");
-        Response response = getRequest("" + listId);
+        Response response = getRequest(basePath + "/" + listId);
         log.info("Received list details for id " + listId + ".");
         return response;
     }
@@ -133,7 +135,7 @@ public class ListController implements BaseController{
                 "\"description\": \"" + description + "\",\n" +
                 "\"language\": \"" + language + "\"" +
                 "}";
-        Response response = postRequest("", body);
+        Response response = postRequest(basePath + "", body);
         log.info("List " + name + " created.");
         return response;
     }
@@ -144,7 +146,7 @@ public class ListController implements BaseController{
         String body = "{" +
                 "\"media_id\": \"" + movieId + "\"" +
                 "}";
-        Response response = postRequest("/" + listId + "/add_item", body);
+        Response response = postRequest(basePath + "/" + listId + "/add_item", body);
         log.info("Added movie with id " + movieId + " to list with id " + listId + ".");
         return response;
     }
@@ -152,7 +154,7 @@ public class ListController implements BaseController{
     public Response clearList(int listId)
     {
         log.info("Clearing list with id " + listId + "...");
-        Response response = postRequestClear("/" + listId + "/clear", "");
+        Response response = postRequestClear(basePath + "/" + listId + "/clear", "");
         log.info("Cleared list with id " + listId + ".");
         return response;
     }
@@ -160,7 +162,7 @@ public class ListController implements BaseController{
     public Response deleteList(int listId)
     {
         log.info("Deleting list with id " + listId + "...");
-        Response response = deleteRequest("/" + listId,"");
+        Response response = deleteRequest(basePath + "/" + listId,"");
         log.info("Deleted list with id " + listId + ".");
         return response;
     }

@@ -15,6 +15,8 @@ public class AuthV3Controller implements BaseController{
 
     private final Logger log = LoggerFactory.getLogger(AuthV3Controller.class);
 
+    private String basePath;
+
     public AuthV3Controller()
     {
         setUp();
@@ -24,7 +26,7 @@ public class AuthV3Controller implements BaseController{
     @Step("Set Up AuthV3Controller")
     public void setUp() {
         log.info("Performing setup for new instance...");
-        RestAssured.baseURI = "https://api.themoviedb.org/3/authentication/";
+        basePath = "https://api.themoviedb.org/3/authentication/";
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
         log.info("Setup finished.");
@@ -85,7 +87,7 @@ public class AuthV3Controller implements BaseController{
     public Response createRequestToken()
     {
         log.info("Requesting new request token...");
-        Response response = getRequest("token/new");
+        Response response = getRequest(basePath + "token/new");
         log.info("New request token received.");
         return response;
     }
@@ -101,7 +103,7 @@ public class AuthV3Controller implements BaseController{
                 "\"password\": \"" + password  + "\",\n" +
                 "\"request_token\": \"" + requestToken  + "\"" +
                 "}";
-        Response response = postRequest("token/validate_with_login", body);
+        Response response = postRequest(basePath + "token/validate_with_login", body);
         log.info("Request token validated with login.");
         return response;
     }
@@ -113,7 +115,7 @@ public class AuthV3Controller implements BaseController{
         String body = "{" +
                 "\"request_token\": \"" + validatedRequestToken  + "\"" +
                 "}";
-        Response response = postRequest("session/new", body);
+        Response response = postRequest(basePath + "session/new", body);
         log.info("New session created.");
         return response;
     }

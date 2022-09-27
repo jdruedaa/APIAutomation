@@ -19,6 +19,8 @@ public class MovieController implements BaseController{
 
     private final Logger log = LoggerFactory.getLogger(MovieController.class);
 
+    private String basePath;
+
     public MovieController()
     {
         setUp();
@@ -28,7 +30,7 @@ public class MovieController implements BaseController{
     @Step("Set Up MovieController")
     public void setUp() {
         log.info("Performing setup for new instance...");
-        RestAssured.baseURI = "https://api.themoviedb.org/3/movie/";
+        basePath = "https://api.themoviedb.org/3/movie/";
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
         gson = new Gson();
@@ -91,7 +93,7 @@ public class MovieController implements BaseController{
     public Response getMovieDetails(int movieId)
     {
         log.info("Requesting movie details for movieId: " + movieId + " ...");
-        Response response = getRequest("" + movieId);
+        Response response = getRequest(basePath + "" + movieId);
         log.info("Response received for movie details for movieId: " + movieId + ".");
         return response;
     }
@@ -113,7 +115,7 @@ public class MovieController implements BaseController{
                 "\"value\": " + ratingValue +
                 "}";
         log.info("Rating movie with id " + movieId + " with rating " + ratingValue + "...");
-        Response response = postRequest(movieId + "/rating", body);
+        Response response = postRequest(basePath + movieId + "/rating", body);
         log.info("Movie with id " + movieId + " rated with rating " + ratingValue + ".");
         return response;
     }

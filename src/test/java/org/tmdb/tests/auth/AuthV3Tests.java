@@ -1,7 +1,6 @@
 package org.tmdb.tests.auth;
 
 import io.restassured.response.Response;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.tmdb.controllers.AuthV3Controller;
@@ -14,7 +13,7 @@ public class AuthV3Tests {
 
     private AuthUtils authUtils;
 
-    @BeforeMethod
+    @BeforeTest
     public void initializeAuthUtils()
     {
         authUtils = new AuthUtils();
