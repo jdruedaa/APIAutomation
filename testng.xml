@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="TMDB API tests">
+<suite name="TMDB API tests" parallel="classes">
     <test name="TMDB Auth">
         <classes>
             <class name="org.tmdb.tests.auth.AuthV3Tests"/>
@@ -11,6 +11,15 @@
         <parameter name="rating" value="8.0"/>
         <classes>
             <class name="org.tmdb.tests.movie.MovieTests"/>
+        </classes>
+    </test>
+    <test name="TMDB List">
+        <parameter name="name" value="Testing List"/>
+        <parameter name="description" value="none"/>
+        <parameter name="language" value="eng"/>
+        <parameter name="movieId" value="550"/>
+        <classes>
+            <class name="org.tmdb.tests.list.ListTests"/>
         </classes>
     </test>
 </suite>

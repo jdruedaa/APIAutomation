@@ -25,7 +25,7 @@ public class AuthV4Tests {
         Response response = authV4Controller.createRequestToken();
         Assert.assertEquals(response.getStatusCode(),200);
         String requestToken = authUtils.extractRequestToken(response);
-        Assert.assertTrue(!requestToken.isEmpty());
+        Assert.assertFalse(requestToken.isEmpty());
         System.out.println("https://www.themoviedb.org/auth/access?request_token=" + requestToken);
     }
 
@@ -41,7 +41,7 @@ public class AuthV4Tests {
         response = authV4Controller.createAccessToken(requestToken);
         Assert.assertEquals(response.getStatusCode(),200);
         String accessToken = authUtils.extractAccessToken(response);
-        Assert.assertTrue(!accessToken.isEmpty());
+        Assert.assertFalse(accessToken.isEmpty());
     }
 
     @AfterSuite

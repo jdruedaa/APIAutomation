@@ -89,4 +89,12 @@ public class AuthV3Controller implements BaseController{
                 "}";
         return postRequest("token/validate_with_login", body);
     }
+
+    public Response createSession(String validatedRequestToken)
+    {
+        String body = "{" +
+                "\"request_token\": \"" + validatedRequestToken  + "\"" +
+                "}";
+        return postRequest("session/new", body);
+    }
 }

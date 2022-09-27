@@ -38,4 +38,19 @@ public class AuthV3Tests {
         response = authV3Controller.validateRequestToken(requestToken);
         assertThat(response.getStatusCode(),is(equalTo(200)));
     }
+
+    @Test
+    public void CreateSessionTest()
+    {
+        AuthV3Controller authV3Controller = new AuthV3Controller();
+        Response response = authV3Controller.createRequestToken();
+        assertThat(response.getStatusCode(),is(equalTo(200)));
+        String requestToken = authUtils.extractRequestToken(response);
+        authV3Controller.validateRequestToken(requestToken);
+        assertThat(response.getStatusCode(),is(equalTo(200)));
+        response = authV3Controller.createSession(requestToken);
+        assertThat(response.getStatusCode(),is(equalTo(200)));
+        String sessionId = authUtils.extractSessionId(response);
+        assertThat(sessionId,is(not(emptyString())));
+    }
 }
