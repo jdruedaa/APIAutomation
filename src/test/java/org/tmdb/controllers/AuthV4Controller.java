@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-public class AuthV4Controller implements BaseController{
+public class AuthV4Controller implements BaseController {
 
     private String apiKey;
     private String authorizationHeader;

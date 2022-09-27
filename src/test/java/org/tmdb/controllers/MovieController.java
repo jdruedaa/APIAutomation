@@ -1,16 +1,20 @@
 package org.tmdb.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tmdb.models.movie.Movie;
 
-public class MovieController implements BaseController{
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
+public class MovieController implements BaseController {
     private String apiKey;
 
     private String authorizationHeader;
@@ -30,7 +34,14 @@ public class MovieController implements BaseController{
     @Step("Set Up MovieController")
     public void setUp() {
         log.info("Performing setup for new instance...");
-        basePath = "https://api.themoviedb.org/3/movie/";
+        try {
+            JsonObject paths = JsonParser
+                    .parseReader(new FileReader("src/test/java/resources/pagePaths.json"))
+                    .getAsJsonObject();
+            basePath = paths.get("movie").getAsString();
+        } catch (FileNotFoundException e) {
+            log.error("File {} not found.", "pagePaths.json");
+        }
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
         gson = new Gson();
@@ -92,9 +103,9 @@ public class MovieController implements BaseController{
     @Step("Get movie details")
     public Response getMovieDetails(int movieId)
     {
-        log.info("Requesting movie details for movieId: " + movieId + " ...");
+        log.info("Requesting movie details for movieId: {}...", movieId);
         Response response = getRequest(basePath + "" + movieId);
-        log.info("Response received for movie details for movieId: " + movieId + ".");
+        log.info("Response received for movie details for movieId: {}.", movieId);
         return response;
     }
 
@@ -114,9 +125,9 @@ public class MovieController implements BaseController{
         String body = "{" +
                 "\"value\": " + ratingValue +
                 "}";
-        log.info("Rating movie with id " + movieId + " with rating " + ratingValue + "...");
+        log.info("Rating movie with id {} with rating {}...", movieId, ratingValue);
         Response response = postRequest(basePath + movieId + "/rating", body);
-        log.info("Movie with id " + movieId + " rated with rating " + ratingValue + ".");
+        log.info("Movie with id {} rated with rating {}.", movieId, ratingValue);
         return response;
     }
 }

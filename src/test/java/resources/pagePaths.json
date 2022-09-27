@@ -1,0 +1,5 @@
+{
+  "authV3": "https://api.themoviedb.org/3/authentication/",
+  "list": "https://api.themoviedb.org/3/list",
+  "movie": "https://api.themoviedb.org/3/movie/"
+}

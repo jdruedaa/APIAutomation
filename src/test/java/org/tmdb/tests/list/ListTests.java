@@ -4,9 +4,9 @@ import io.restassured.response.Response;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import org.tmdb.controllers.ListController;
 import org.tmdb.models.list.TMDBList;
 import org.tmdb.utils.ListUtils;
+import org.tmdb.controllers.ListController;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class ListTests {
     public void GetListDetailsTest()
     {
         ListController listController = new ListController();
-        Response response = listController.createList("Testing List 2", "none", "eng");
+        Response response = listController.createList("Test1", "none", "eng");
         assertThat(response.getStatusCode(),is(equalTo(201)));
         int listId = listUtils.extractListId(response);
         testListIds.add(listId);
@@ -54,7 +54,7 @@ public class ListTests {
     public void AddMovieToListTest(int movieId)
     {
         ListController listController = new ListController();
-        Response response = listController.createList("Testing List 2", "none", "eng");
+        Response response = listController.createList("Test2", "none", "eng");
         assertThat(response.getStatusCode(),is(equalTo(201)));
         int listId = listUtils.extractListId(response);
         testListIds.add(listId);
@@ -75,7 +75,7 @@ public class ListTests {
     public void ClearListTest()
     {
         ListController listController = new ListController();
-        Response response = listController.createList("Testing List 2", "none", "eng");
+        Response response = listController.createList("Test3", "none", "eng");
         assertThat(response.getStatusCode(),is(equalTo(201)));
         int listId = listUtils.extractListId(response);
         testListIds.add(listId);
@@ -103,7 +103,7 @@ public class ListTests {
     public void DeleteListTest()
     {
         ListController listController = new ListController();
-        Response response = listController.createList("Testing List 5", "none", "eng");
+        Response response = listController.createList("Test4", "none", "eng");
         assertThat(response.getStatusCode(),is(equalTo(201)));
         int listId = listUtils.extractListId(response);
         listController.deleteList(listId);

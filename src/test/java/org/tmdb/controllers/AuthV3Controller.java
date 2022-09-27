@@ -1,5 +1,7 @@
 package org.tmdb.controllers;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -7,7 +9,11 @@ import io.restassured.specification.RequestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AuthV3Controller implements BaseController{
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
+public class AuthV3Controller implements BaseController {
 
     private String apiKey;
 
@@ -26,7 +32,14 @@ public class AuthV3Controller implements BaseController{
     @Step("Set Up AuthV3Controller")
     public void setUp() {
         log.info("Performing setup for new instance...");
-        basePath = "https://api.themoviedb.org/3/authentication/";
+        try {
+            JsonObject paths = JsonParser
+                    .parseReader(new FileReader("src/test/java/resources/pagePaths.json"))
+                    .getAsJsonObject();
+            basePath = paths.get("authV3").getAsString();
+        } catch (FileNotFoundException e) {
+            log.error("File {} not found.", "pagePaths.json");
+        }
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
         log.info("Setup finished.");
