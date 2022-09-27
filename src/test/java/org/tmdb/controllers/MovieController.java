@@ -1,12 +1,13 @@
 package org.tmdb.controllers;
 
 import com.google.gson.Gson;
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tmdb.models.movie.Movie;
 
 public class MovieController implements BaseController{
@@ -16,7 +17,7 @@ public class MovieController implements BaseController{
 
     private Gson gson;
 
-    private final Logger log = LogManager.getLogger(MovieController.class);
+    private final Logger log = LoggerFactory.getLogger(MovieController.class);
 
     public MovieController()
     {
@@ -24,6 +25,7 @@ public class MovieController implements BaseController{
     }
 
     @Override
+    @Step("Set Up MovieController")
     public void setUp() {
         log.info("Performing setup for new MovieController...");
         RestAssured.baseURI = "https://api.themoviedb.org/3/movie/";
@@ -34,6 +36,7 @@ public class MovieController implements BaseController{
     }
 
     @Override
+    @Step("Creating Base Request")
     public RequestSpecification requestBase() {
         return RestAssured.given()
                 .contentType("application/json;charset=utf-8")
@@ -84,6 +87,7 @@ public class MovieController implements BaseController{
                 .response();
     }
 
+    @Step("Get movie details")
     public Response getMovieDetails(int movieId)
     {
         log.info("Requesting movie details for movieId: " + movieId + " ...");
@@ -92,6 +96,7 @@ public class MovieController implements BaseController{
         return response;
     }
 
+    @Step("Extract movie from response")
     public Movie extractMovieFromResponse(Response response)
     {
         Movie movie;
@@ -101,6 +106,7 @@ public class MovieController implements BaseController{
         return movie;
     }
 
+    @Step("Rate movie")
     public Response rateMovie(int movieId, double ratingValue)
     {
         String body = "{" +

@@ -1,5 +1,6 @@
 package org.tmdb.controllers;
 
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -16,6 +17,7 @@ public class AuthV3Controller implements BaseController{
     }
 
     @Override
+    @Step("Set Up AuthV3Controller")
     public void setUp() {
         RestAssured.baseURI = "https://api.themoviedb.org/3/authentication/";
         apiKey = System.getenv("MovieDB_API_Key");
@@ -73,11 +75,13 @@ public class AuthV3Controller implements BaseController{
                 .response();
     }
 
+    @Step("Create Request Token")
     public Response createRequestToken()
     {
         return getRequest("token/new");
     }
 
+    @Step("Validate Request Token")
     public Response validateRequestToken(String requestToken)
     {
         String username = System.getenv("MovieDB_username");
@@ -90,6 +94,7 @@ public class AuthV3Controller implements BaseController{
         return postRequest("token/validate_with_login", body);
     }
 
+    @Step("Create Session")
     public Response createSession(String validatedRequestToken)
     {
         String body = "{" +

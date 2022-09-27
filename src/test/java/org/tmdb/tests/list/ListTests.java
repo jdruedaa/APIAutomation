@@ -1,6 +1,7 @@
 package org.tmdb.tests.list;
 
 import io.restassured.response.Response;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -17,7 +18,7 @@ public class ListTests {
     private final ArrayList<Integer> testListIds = new ArrayList<>();
     private ListUtils listUtils;
 
-    @BeforeTest
+    @BeforeMethod
     public void initializeListUtils()
     {
         listUtils = new ListUtils();
