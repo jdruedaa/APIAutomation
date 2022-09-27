@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.tmdb.models.movie.Movie;
 
 public class MovieController implements BaseController{
@@ -13,6 +16,8 @@ public class MovieController implements BaseController{
 
     private Gson gson;
 
+    private final Logger log = LogManager.getLogger(MovieController.class);
+
     public MovieController()
     {
         setUp();
@@ -20,10 +25,12 @@ public class MovieController implements BaseController{
 
     @Override
     public void setUp() {
+        log.info("Performing setup for new MovieController...");
         RestAssured.baseURI = "https://api.themoviedb.org/3/movie/";
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
         gson = new Gson();
+        log.info("Setup for new MovieController finished.");
     }
 
     @Override
@@ -79,13 +86,18 @@ public class MovieController implements BaseController{
 
     public Response getMovieDetails(int movieId)
     {
-        return getRequest("" + movieId);
+        log.info("Requesting movie details for movieId: " + movieId + " ...");
+        Response response = getRequest("" + movieId);
+        log.info("Response received for movie details for movieId: " + movieId + ".");
+        return response;
     }
 
     public Movie extractMovieFromResponse(Response response)
     {
         Movie movie;
+        log.info("Extracting movie POJO from response...");
         movie = gson.fromJson(response.getBody().asString(), Movie.class);
+        log.info("Movie Pojo extracted from response.");
         return movie;
     }
 
@@ -94,6 +106,9 @@ public class MovieController implements BaseController{
         String body = "{" +
                 "\"value\": " + ratingValue +
                 "}";
-        return postRequest(movieId + "/rating", body);
+        log.info("Rating movie with id " + movieId + " with rating " + ratingValue + "...");
+        Response response = postRequest(movieId + "/rating", body);
+        log.info("Movie with id " + movieId + "rated with rating " + ratingValue + ".");
+        return response;
     }
 }
