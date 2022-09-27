@@ -4,12 +4,16 @@ import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AuthV3Controller implements BaseController{
 
     private String apiKey;
 
     private String authorizationHeader;
+
+    private final Logger log = LoggerFactory.getLogger(AuthV3Controller.class);
 
     public AuthV3Controller()
     {
@@ -19,9 +23,11 @@ public class AuthV3Controller implements BaseController{
     @Override
     @Step("Set Up AuthV3Controller")
     public void setUp() {
+        log.info("Performing setup for new instance...");
         RestAssured.baseURI = "https://api.themoviedb.org/3/authentication/";
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
+        log.info("Setup finished.");
     }
 
     @Override
@@ -78,12 +84,16 @@ public class AuthV3Controller implements BaseController{
     @Step("Create Request Token")
     public Response createRequestToken()
     {
-        return getRequest("token/new");
+        log.info("Requesting new request token...");
+        Response response = getRequest("token/new");
+        log.info("New request token received.");
+        return response;
     }
 
     @Step("Validate Request Token")
     public Response validateRequestToken(String requestToken)
     {
+        log.info("Validating request token with login...");
         String username = System.getenv("MovieDB_username");
         String password = System.getenv("MovieDB_password");
         String body = "{" +
@@ -91,15 +101,20 @@ public class AuthV3Controller implements BaseController{
                 "\"password\": \"" + password  + "\",\n" +
                 "\"request_token\": \"" + requestToken  + "\"" +
                 "}";
-        return postRequest("token/validate_with_login", body);
+        Response response = postRequest("token/validate_with_login", body);
+        log.info("Request token validated with login.");
+        return response;
     }
 
     @Step("Create Session")
     public Response createSession(String validatedRequestToken)
     {
+        log.info("Creating new session...");
         String body = "{" +
                 "\"request_token\": \"" + validatedRequestToken  + "\"" +
                 "}";
-        return postRequest("session/new", body);
+        Response response = postRequest("session/new", body);
+        log.info("New session created.");
+        return response;
     }
 }

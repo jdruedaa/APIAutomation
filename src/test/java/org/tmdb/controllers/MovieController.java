@@ -27,12 +27,12 @@ public class MovieController implements BaseController{
     @Override
     @Step("Set Up MovieController")
     public void setUp() {
-        log.info("Performing setup for new MovieController...");
+        log.info("Performing setup for new instance...");
         RestAssured.baseURI = "https://api.themoviedb.org/3/movie/";
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
         gson = new Gson();
-        log.info("Setup for new MovieController finished.");
+        log.info("Setup finished.");
     }
 
     @Override
@@ -114,7 +114,7 @@ public class MovieController implements BaseController{
                 "}";
         log.info("Rating movie with id " + movieId + " with rating " + ratingValue + "...");
         Response response = postRequest(movieId + "/rating", body);
-        log.info("Movie with id " + movieId + "rated with rating " + ratingValue + ".");
+        log.info("Movie with id " + movieId + " rated with rating " + ratingValue + ".");
         return response;
     }
 }

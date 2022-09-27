@@ -4,8 +4,9 @@ import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tmdb.models.list.TMDBList;
-import org.tmdb.models.movie.Movie;
 import org.tmdb.utils.AuthUtils;
 
 public class ListController implements BaseController{
@@ -17,6 +18,8 @@ public class ListController implements BaseController{
 
     private Gson gson;
 
+    private final Logger log = LoggerFactory.getLogger(ListController.class);
+
     public ListController()
     {
         setUp();
@@ -24,11 +27,13 @@ public class ListController implements BaseController{
 
     @Override
     public void setUp() {
+        log.info("Performing setup for new instance...");
         sessionId = requestAuthorizedSession();
         RestAssured.baseURI = "https://api.themoviedb.org/3/list";
         apiKey = System.getenv("MovieDB_API_Key");
         authorizationHeader = System.getenv("MovieDB_Read_Access_Token");
         gson = new Gson();
+        log.info("Setup finished.");
     }
 
     @Override
@@ -96,47 +101,67 @@ public class ListController implements BaseController{
 
     public String requestAuthorizedSession()
     {
+        log.info("Requesting authorized session...");
         AuthUtils authUtils = new AuthUtils();
-        return authUtils.createAuthorizedSession();
+        String sessionId = authUtils.createAuthorizedSession();
+        log.info("Recieved authorized session.");
+        return sessionId;
     }
 
     public Response getListDetails(int listId)
     {
-        return getRequest("" + listId);
+        log.info("Requesting list details with id " + listId + "...");
+        Response response = getRequest("" + listId);
+        log.info("Received list details for id " + listId + ".");
+        return response;
     }
 
     public TMDBList extractListFromResponse(Response response)
     {
+        log.info("Extracting list from response...");
         TMDBList tmdbList;
         tmdbList = gson.fromJson(response.getBody().asString(), TMDBList.class);
+        log.info("List extracted from response.");
         return tmdbList;
     }
 
     public Response createList(String name, String description, String language)
     {
+        log.info("Requesting to create list " + name + "...");
         String body = "{" +
                 "\"name\": \"" + name + "\",\n" +
                 "\"description\": \"" + description + "\",\n" +
                 "\"language\": \"" + language + "\"" +
                 "}";
-        return postRequest("", body);
+        Response response = postRequest("", body);
+        log.info("List " + name + " created.");
+        return response;
     }
 
     public Response addMovie(int listId, int movieId)
     {
+        log.info("Adding movie with id " + movieId + " to list with id " + listId + "...");
         String body = "{" +
                 "\"media_id\": \"" + movieId + "\"" +
                 "}";
-        return postRequest("/" + listId + "/add_item", body);
+        Response response = postRequest("/" + listId + "/add_item", body);
+        log.info("Added movie with id " + movieId + " to list with id " + listId + ".");
+        return response;
     }
 
     public Response clearList(int listId)
     {
-        return postRequestClear("/" + listId + "/clear", "");
+        log.info("Clearing list with id " + listId + "...");
+        Response response = postRequestClear("/" + listId + "/clear", "");
+        log.info("Cleared list with id " + listId + ".");
+        return response;
     }
 
     public Response deleteList(int listId)
     {
-        return deleteRequest("/" + listId,"");
+        log.info("Deleting list with id " + listId + "...");
+        Response response = deleteRequest("/" + listId,"");
+        log.info("Deleted list with id " + listId + ".");
+        return response;
     }
 }
